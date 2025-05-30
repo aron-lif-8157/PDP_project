@@ -37,6 +37,7 @@ for N in "${N_values[@]}"; do
 done
 
 # ---------- Weak Scaling ----------
+N_values=(65536 131072) # 1048576 2097152 4194304
 for p in "${p_values[@]}"; do
   for n_local in "${N_values[@]}"; do
     N=$(( p * n_local ))
