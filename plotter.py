@@ -1,36 +1,49 @@
-import sys
-import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-def main(csv_path: str):
-    # Read the first row (bin edges) and second row (counts)
-    bin_edges = np.loadtxt(csv_path, delimiter=",", max_rows=1)
-    counts    = np.loadtxt(csv_path, delimiter=",", skiprows=1, max_rows=1)
+files = [
+    Path("histogram_1048576_p32.csv"),
+    Path("histogram_2097152_p32.csv"),
+    Path("histogram_4194304_p32.csv"),
+]
 
-    # Calculate bin widths and left edges for bar chart
-    widths = bin_edges[1:] - bin_edges[:-1]
-    left_edges = bin_edges[:-1]
+def load_hist(path):
+    edges  = []
+    counts = []
+    last_end = None
 
-    # Plot bar chart
+    with path.open() as f:
+        next(f)                     # hoppa över header-raden
+
+        for line in f:
+            parts = line.strip().split(",")
+            if len(parts) != 3:
+                continue            # skydda mot tomma rader
+
+            start, end, cnt = parts
+            edges.append(float(start))
+            counts.append(int(cnt))
+            last_end = float(end)   # sparar senaste "Bin End"
+
+    if last_end is not None:
+        edges.append(last_end)      # avsluta kantlistan
+
+    return edges, counts
+
+for csv in files:
+    edges, counts = load_hist(csv)
+    if not counts:
+        print(f"⚠️  Hittade inga data i {csv}")
+        continue
+
+    centers = [(edges[i] + edges[i+1]) / 2 for i in range(len(edges)-1)]
+
     plt.figure(figsize=(8, 4))
-    plt.bar(left_edges, counts, width=widths, edgecolor="black", align="edge")
-    plt.xlabel("Susceptible Humans at T=100")
+    plt.bar(centers, counts,
+            width=centers[1] - centers[0],
+            edgecolor="black", align="center")
+    plt.xlabel("Susceptible humans at T=100")
     plt.ylabel("Frequency")
-    plt.title(f"Histogram from {Path(csv_path).name}")
+    plt.title(f"Histogram – {csv.stem}")
     plt.tight_layout()
-
-    # Save and show
-    out_png = Path(csv_path).with_suffix(".png")
-    plt.savefig(out_png)
-    print(f"Plot saved to {out_png}")
-    plt.show()
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 plot_counts.py <csv_file>")
-        sys.exit(1)
-    main(sys.argv[1])
-
-# Display the code to the user
-
+    plt.show()          # byt till plt.savefig(...) om du vill spara bilden
