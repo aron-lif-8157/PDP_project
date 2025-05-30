@@ -14,7 +14,7 @@ EXEC="./build/main"
 p_values=(1 2 4 8)
 
 # Workloads for strong scaling (all > 10^6)
-N_values=(1048576 2097152 4194304)
+N_values=(65536 131072) # 1048576 2097152 4194304
 
 # ---------- Strong Scaling ----------
 for N in "${N_values[@]}"; do
@@ -32,6 +32,8 @@ for N in "${N_values[@]}"; do
     )
     echo "strong,$p,$N,$n_local,$time_str"
   done
+  echo "Finished strong scaling for N=$N"
+  echo "-----------------------------"
 done
 
 # ---------- Weak Scaling ----------

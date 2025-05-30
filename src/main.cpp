@@ -45,36 +45,6 @@ int main(int argc, char *argv[])
         return 1;                     // Exit if not enough arguments are provided
     }
 
-    /*/
-    std::string output_file;
-    std::ofstream output_file_stream;
-
-    //? generating output file
-    if (rank == 0)
-    {
-
-        // logic for output file generation
-        const std::string output_dir = "output"; // Define the output directory
-
-        // Check if the output directory exists or create it
-        if (!output_dir_check(output_dir))
-        {
-            std::cerr << "Error creating or accessing output directory: " << output_dir << std::endl;
-            MPI_Abort(MPI_COMM_WORLD, 1); // Abort MPI if output directory cannot be accessed
-        }
-
-        // Generate output file name based on the number of runs
-        output_file = generate_outputfile_name(output_dir, total_runs);
-
-        output_file_stream.open(output_file);
-        if (!output_file_stream)
-        {
-            std::cerr << "Error opening output file: " << output_file << "\n";
-            MPI_Abort(MPI_COMM_WORLD, 1); // Abort MPI if output file cannot be opened
-        }
-    }
-    */
-
     std::random_device rd; // Random number generator
     //! changing of seed is done here
     std::mt19937_64 rand_seed(rd() + rank); // Mersenne Twister engine for random number generation
@@ -107,7 +77,6 @@ int main(int argc, char *argv[])
         MPI_COMM_WORLD                            /*comm*/
     );
 
-    //! Detta borde gå att parallellisera
     if (rank == 0)
     {
         //? calculcate global min and max
@@ -136,32 +105,32 @@ int main(int argc, char *argv[])
         double t1 = MPI_Wtime(); // End timing
         double time = t1 - t0;   // Calculate elapsed time
 
-        for (int i = 0; i < bins; ++i)
+        // Generate filename
+        std::string filename = "histogram_" +
+                               std::to_string(total_runs) + "_p" +
+                               std::to_string(world_size) + ".csv";
+
+        // Open file in current directory
+        std::ofstream outfile(filename);
+        if (!outfile)
         {
-            std::cout << "Bin " << i << ": " << bin_edges[i] << " - " << bin_edges[i + 1] << " Count: " << bin_values[i] << "\n";
+            std::cerr << "Error opening output file: " << filename << "\n";
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
+
+        // Write bin edges (header)
+        outfile << "Bin Start,Bin End,Count\n";
+
+        // Write bin data
+        for (size_t i = 0; i < bin_values.size(); ++i)
+        {
+            outfile << bin_edges[i] << ","
+                    << bin_edges[i + 1] << ","
+                    << bin_values[i] << "\n";
+        }
+
+        outfile.close();
         std::cout << "[timing] processes:" << world_size << " problem size:" << total_runs << ") took " << time << " s\n";
-        /*
-          //? write results to output file
-          output_file_stream << std::fixed; // valfri formatering
-          // 1) Skriv kanter
-          for (int i = 0; i <= bins; ++i)
-          {
-              output_file_stream << bin_edges[i];
-              if (i < bins)
-                  output_file_stream << ",";
-          }
-          output_file_stream << "\n";
-          // 2) Skriv counts
-          for (int i = 0; i < bins; ++i)
-          {
-              output_file_stream << bin_values[i];
-              if (i + 1 < bins)
-                  output_file_stream << ",";
-          }
-          output_file_stream << "\n";
-          output_file_stream.close(); // Close the output file stream
-          */
     }
 
     MPI_Finalize();
