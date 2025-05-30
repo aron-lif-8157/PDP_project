@@ -11,7 +11,7 @@ echo "mode,p,N_total,n_local,time_sec"
 EXEC="./build/main"
 
 # Process counts to test
-p_values=(1 2 4 8)
+p_values=(1 2 4 8 16 32)
 
 # Workloads for strong scaling (all > 10^6)
 N_values=(65536 131072) # 1048576 2097152 4194304
