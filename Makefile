@@ -1,6 +1,6 @@
 CXX 	 := mpicxx          #   <── byt från g++ → mpic++
 CC       := gcc
-CXXFLAGS := -std=c++11 -O3 -Wall -Wextra -pedantic
+CXXFLAGS := -std=c++23 -O3 -Wall -Wextra -pedantic
 CFLAGS   := -std=c99  -O3 -Wall -Wextra -pedantic
 LDFLAGS  :=
 
