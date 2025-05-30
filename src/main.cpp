@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
         double t1 = MPI_Wtime(); // End timing
         double time = t1 - t0;   // Calculate elapsed time
 
-        for (int i = 0; i < bin_values.size(); ++i)
+        for (int i = 0; i < bins; ++i)
         {
             std::cout << "Bin " << i << ": " << bin_edges[i] << " - " << bin_edges[i + 1] << " Count: " << bin_values[i] << "\n";
         }
