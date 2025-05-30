@@ -12,11 +12,11 @@
 
 #include "ssa.hpp"
 #include "stoichiometry.hpp"
-//#include "output_file_logic.hpp"
+// #include "output_file_logic.hpp"
 
-std::array<int, 7> x0 ={900, 900, 30, 330, 50, 270, 20}; // starting values for the state vector
-const double T = 100.0;                                 // Total time for the simulation
-int TIME_RUNS = 100;                                   // Number of runs for timing tests is multiplied by given processes
+std::array<int, 7> x0 = {900, 900, 30, 330, 50, 270, 20}; // starting values for the state vector
+const double T = 100.0;                                   // Total time for the simulation
+int TIME_RUNS = 100;                                      // Number of runs for timing tests is multiplied by given processes
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     }
 
     int local_runs = std::stoi(argv[1]);
-    int total_runs = local_runs * world_size; 
+    int total_runs = local_runs * world_size;
 
     /*check that total runs is divisible by the number of processes*/
     if (rank == 0 && total_runs % world_size != 0)
@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
         return 1;                     // Exit if not enough arguments are provided
     }
 
-
     /*/
     std::string output_file;
     std::ofstream output_file_stream;
@@ -53,7 +52,7 @@ int main(int argc, char *argv[])
     //? generating output file
     if (rank == 0)
     {
-    
+
         // logic for output file generation
         const std::string output_dir = "output"; // Define the output directory
 
@@ -79,7 +78,6 @@ int main(int argc, char *argv[])
     std::random_device rd; // Random number generator
     //! changing of seed is done here
     std::mt19937_64 rand_seed(rd() + rank); // Mersenne Twister engine for random number generation
-
 
     double t0 = MPI_Wtime(); // Start timing
     //?run simulations
@@ -136,32 +134,34 @@ int main(int argc, char *argv[])
             bin_values[index]++;  // Increment the count for the corresponding bin
         }
         double t1 = MPI_Wtime(); // End timing
-        double time = t1 - t0; // Calculate elapsed time
+        double time = t1 - t0;   // Calculate elapsed time
+
         for (int i = 0; i < bin_values.size(); ++i)
         {
             std::cout << "Bin " << i << ": " << bin_edges[i] << " - " << bin_edges[i + 1] << " Count: " << bin_values[i] << "\n";
         }
-      /*
-        //? write results to output file
-        output_file_stream << std::fixed; // valfri formatering
-        // 1) Skriv kanter
-        for (int i = 0; i <= bins; ++i)
-        {
-            output_file_stream << bin_edges[i];
-            if (i < bins)
-                output_file_stream << ",";
-        }
-        output_file_stream << "\n";
-        // 2) Skriv counts
-        for (int i = 0; i < bins; ++i)
-        {
-            output_file_stream << bin_values[i];
-            if (i + 1 < bins)
-                output_file_stream << ",";
-        }
-        output_file_stream << "\n";
-        output_file_stream.close(); // Close the output file stream
-        */
+        std::cout << "[timing] processes:" << world_size << " problem size:" << total_runs << ") took " << time << " s\n";
+        /*
+          //? write results to output file
+          output_file_stream << std::fixed; // valfri formatering
+          // 1) Skriv kanter
+          for (int i = 0; i <= bins; ++i)
+          {
+              output_file_stream << bin_edges[i];
+              if (i < bins)
+                  output_file_stream << ",";
+          }
+          output_file_stream << "\n";
+          // 2) Skriv counts
+          for (int i = 0; i < bins; ++i)
+          {
+              output_file_stream << bin_values[i];
+              if (i + 1 < bins)
+                  output_file_stream << ",";
+          }
+          output_file_stream << "\n";
+          output_file_stream.close(); // Close the output file stream
+          */
     }
 
     MPI_Finalize();
