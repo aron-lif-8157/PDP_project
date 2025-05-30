@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=malaria_scaling
 #SBATCH --nodes=2
+#SBATCH --time=01:00:00
 #SBATCH --account=uppmax2025-2-247
 #SBATCH --partition=node
 #SBATCH --output=malaria_scaling_%j.out
@@ -21,7 +22,7 @@ TOTAL_CORES=$(( CPUS_PER_NODE * SLURM_JOB_NUM_NODES ))
 
 # Define scaling parameters
 p_values=(1 2 4 8 16 32)
-N_values=(65536 131072 262144 524288 1048576 2097152 4194304)
+N_values=(65536 131072)
 
 # Output file
 outfile="scaling_results.csv"

@@ -1,0 +1,43 @@
+rm -rf build
+mkdir -p build
+mpicxx -std=c++11 -O3 -Wall -Wextra -pedantic -c src/stoichiometry.cpp -o build/stoichiometry.o
+mpicxx -std=c++11 -O3 -Wall -Wextra -pedantic -c src/ssa.cpp -o build/ssa.o
+mpicxx -std=c++11 -O3 -Wall -Wextra -pedantic -c src/main.cpp -o build/main.o
+gcc  -std=c99  -O3 -Wall -Wextra -pedantic   -c src/prop.c -o build/prop.o
+mpicxx -std=c++11 -O3 -Wall -Wextra -pedantic build/stoichiometry.o build/ssa.o build/main.o   build/prop.o  -o build/main
+Running strong scaling: N=65536, p=1, n_local=65536
+strong,1,65536,65536,71.71
+Running strong scaling: N=131072, p=1, n_local=131072
+strong,1,131072,131072,143.354
+Running weak scaling: N=65536, p=1, n_local=65536
+weak,1,65536,65536,71.6669
+Running strong scaling: N=65536, p=2, n_local=32768
+strong,2,65536,32768,36.0297
+Running strong scaling: N=131072, p=2, n_local=65536
+strong,2,131072,65536,71.9733
+Running weak scaling: N=131072, p=2, n_local=65536
+weak,2,131072,65536,71.8882
+Running strong scaling: N=65536, p=4, n_local=16384
+strong,4,65536,16384,18.2307
+Running strong scaling: N=131072, p=4, n_local=32768
+strong,4,131072,32768,36.9426
+Running weak scaling: N=262144, p=4, n_local=65536
+weak,4,262144,65536,73.3797
+Running strong scaling: N=65536, p=8, n_local=8192
+strong,8,65536,8192,10.4812
+Running strong scaling: N=131072, p=8, n_local=16384
+strong,8,131072,16384,20.9953
+Running weak scaling: N=524288, p=8, n_local=65536
+weak,8,524288,65536,83.3365
+Running strong scaling: N=65536, p=16, n_local=4096
+strong,16,65536,4096,5.89082
+Running strong scaling: N=131072, p=16, n_local=8192
+strong,16,131072,8192,11.7584
+Running weak scaling: N=1048576, p=16, n_local=65536
+weak,16,1048576,65536,92.9204
+Running strong scaling: N=65536, p=32, n_local=2048
+strong,32,65536,2048,3.061
+Running strong scaling: N=131072, p=32, n_local=4096
+strong,32,131072,4096,5.90204
+Running weak scaling: N=2097152, p=32, n_local=65536
+weak,32,2097152,65536,93.4993
