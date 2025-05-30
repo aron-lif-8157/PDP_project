@@ -12,7 +12,7 @@
 
 #include "ssa.hpp"
 #include "stoichiometry.hpp"
-#include "output_file_logic.hpp"
+//#include "output_file_logic.hpp"
 
 std::array<int, 7> x0 ={900, 900, 30, 330, 50, 270, 20}; // starting values for the state vector
 const double T = 100.0;                                 // Total time for the simulation
@@ -137,6 +137,10 @@ int main(int argc, char *argv[])
         }
         double t1 = MPI_Wtime(); // End timing
         double time = t1 - t0; // Calculate elapsed time
+        for (int i = 0; i < bin_values.size(); ++i)
+        {
+            std::cout << "Bin " << i << ": " << bin_edges[i] << " - " << bin_edges[i + 1] << " Count: " << bin_values[i] << "\n";
+        }
       /*
         //? write results to output file
         output_file_stream << std::fixed; // valfri formatering
@@ -158,7 +162,6 @@ int main(int argc, char *argv[])
         output_file_stream << "\n";
         output_file_stream.close(); // Close the output file stream
         */
-        std::cout << "[timing] processes:" << world_size << " problem size:" << total_runs << ") took " << time << " s\n";
     }
 
     MPI_Finalize();
