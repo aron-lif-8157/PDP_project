@@ -46,24 +46,25 @@ int main(int argc, char *argv[])
     }
 
 
-
+    /*/
     std::string output_file;
     std::ofstream output_file_stream;
 
     //? generating output file
     if (rank == 0)
     {
-        /* logic for output file generation */
+    
+        // logic for output file generation
         const std::string output_dir = "output"; // Define the output directory
 
-        /* Check if the output directory exists or create it */
+        // Check if the output directory exists or create it
         if (!output_dir_check(output_dir))
         {
             std::cerr << "Error creating or accessing output directory: " << output_dir << std::endl;
             MPI_Abort(MPI_COMM_WORLD, 1); // Abort MPI if output directory cannot be accessed
         }
 
-        /* Generate output file name based on the number of runs*/
+        // Generate output file name based on the number of runs
         output_file = generate_outputfile_name(output_dir, total_runs);
 
         output_file_stream.open(output_file);
@@ -73,6 +74,7 @@ int main(int argc, char *argv[])
             MPI_Abort(MPI_COMM_WORLD, 1); // Abort MPI if output file cannot be opened
         }
     }
+    */
 
     std::random_device rd; // Random number generator
     //! changing of seed is done here
@@ -135,6 +137,7 @@ int main(int argc, char *argv[])
         }
         double t1 = MPI_Wtime(); // End timing
         double time = t1 - t0; // Calculate elapsed time
+      /*
         //? write results to output file
         output_file_stream << std::fixed; // valfri formatering
         // 1) Skriv kanter
@@ -154,6 +157,7 @@ int main(int argc, char *argv[])
         }
         output_file_stream << "\n";
         output_file_stream.close(); // Close the output file stream
+        */
         std::cout << "[timing] processes:" << world_size << " problem size:" << total_runs << ") took " << time << " s\n";
     }
 
